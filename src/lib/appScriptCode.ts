@@ -16,21 +16,39 @@
  */
 
 export const GOOGLE_APPS_SCRIPT_CODE = `/**
- * GOOGLE APPS SCRIPT AUTOMATION FOR 'PENJUALAN' & 'STOCK LIST'
+ * GOOGLE APPS SCRIPT AUTOMATION FOR 'PENJUALAN', 'BARANG MASUK', 'BARANG KELUAR', & 'STOCK LIST'
  * Spreadsheet ID: 1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ
  */
 
 function doPost(e) {
   try {
-    var rawData = e.postData ? e.postData.contents : "";
+    var rawData = "";
+    if (e && e.postData && e.postData.contents) {
+      rawData = e.postData.contents;
+    } else if (e && e.parameter && e.parameter.data) {
+      rawData = e.parameter.data;
+    } else if (e && typeof e === 'string') {
+      rawData = e;
+    }
+
     if (!rawData) {
       return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Payload kosong" }))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
-    var data = JSON.parse(rawData);
-    var ss = getSS();
-    
+    var data;
+    try {
+      data = JSON.parse(rawData);
+    } catch (parseErr) {
+      try {
+        data = JSON.parse(decodeURIComponent(rawData));
+      } catch (e2) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Gagal parse JSON: " + parseErr.message }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    var ss = getSS(data);
     if (!ss) {
       return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Spreadsheet tidak ditemukan" }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -41,8 +59,11 @@ function doPost(e) {
     if (data.produk && Array.isArray(data.produk)) {
       for (var pIdx = 0; pIdx < data.produk.length; pIdx++) {
         var pObj = data.produk[pIdx];
-        if (pObj.id) prodMap[pObj.id] = pObj;
-        if (pObj.sku) prodMap[pObj.sku] = pObj;
+        if (pObj) {
+          if (pObj.id) prodMap[String(pObj.id)] = pObj;
+          if (pObj.sku) prodMap[String(pObj.sku)] = pObj;
+          if (pObj.nama) prodMap[String(pObj.nama)] = pObj;
+        }
       }
     }
     
@@ -104,7 +125,6 @@ function syncPenjualanSheet(ss, poList) {
     sheet = ss.insertSheet(sheetName);
   }
   
-  // Header 12 Kolom
   var headers = [
     "ID",
     "CUSTOMER",
@@ -133,7 +153,7 @@ function syncPenjualanSheet(ss, poList) {
     var p = poList[i];
     var idPenjualan = p.noPO || p.id || ("PJ-" + (i + 1));
     var customer = p.customer || p.namaSupplier || "-";
-    var posisi = (p.posisi || "TOKO").toUpperCase();
+    var posisi = String(p.posisi || "TOKO").toUpperCase();
     var admin = p.admin || "Admin";
     var tanggal = p.tanggal ? formatDateStr(p.tanggal) : formatDateStr(new Date());
     
@@ -180,7 +200,7 @@ function syncPenjualanSheet(ss, poList) {
 }
 
 /**
- * UPDATE SHEET 'STOCK LIST' PER LOKASI (QTY TOKO, QTY GUDANG, QTY PIRANHA)
+ * UPDATE SHEET 'STOCK LIST' PER LOKASI (QTY TOKO, QTY GUDANG, QTY PIRANHA) secara BULK MEMORY
  */
 function syncStockListSheet(ss, produkList) {
   var sheet = ss.getSheetByName("STOCK LIST");
@@ -188,7 +208,7 @@ function syncStockListSheet(ss, produkList) {
   
   var dataRange = sheet.getDataRange();
   var values = dataRange.getValues();
-  if (values.length <= 1) return;
+  if (!values || values.length <= 1) return;
   
   var headers = values[0].map(function(h) { return String(h || "").trim().toUpperCase(); });
   
@@ -207,6 +227,7 @@ function syncStockListSheet(ss, produkList) {
     if (keyNama) prodMap[keyNama] = p;
   }
   
+  var modified = false;
   for (var r = 1; r < values.length; r++) {
     var rowSku = (values[r][colCode] || "").toString().trim().toUpperCase();
     var rowDesc = (values[r][colDesc] || "").toString().trim().toUpperCase();
@@ -214,15 +235,22 @@ function syncStockListSheet(ss, produkList) {
     var matchProd = prodMap[rowSku] || prodMap[rowDesc];
     if (matchProd) {
       if (colQtyToko >= 0 && matchProd.qtyToko !== undefined) {
-        sheet.getRange(r + 1, colQtyToko + 1).setValue(matchProd.qtyToko);
+        values[r][colQtyToko] = Number(matchProd.qtyToko) || 0;
+        modified = true;
       }
       if (colQtyGudang >= 0 && matchProd.qtyGudang !== undefined) {
-        sheet.getRange(r + 1, colQtyGudang + 1).setValue(matchProd.qtyGudang);
+        values[r][colQtyGudang] = Number(matchProd.qtyGudang) || 0;
+        modified = true;
       }
       if (colQtyPiranha >= 0 && matchProd.qtyPiranha !== undefined) {
-        sheet.getRange(r + 1, colQtyPiranha + 1).setValue(matchProd.qtyPiranha);
+        values[r][colQtyPiranha] = Number(matchProd.qtyPiranha) || 0;
+        modified = true;
       }
     }
+  }
+  
+  if (modified) {
+    sheet.getRange(1, 1, values.length, values[0].length).setValues(values);
   }
 }
 
@@ -413,18 +441,38 @@ function findColIndex(headers, targets) {
 }
 
 function formatDateStr(isoStr) {
+  if (!isoStr) return "";
   try {
     var d = new Date(isoStr);
     if (isNaN(d.getTime())) return String(isoStr);
-    return Utilities.formatDate(d, Session.getScriptTimeZone() || "GMT+7", "yyyy-MM-dd HH:mm:ss");
+    try {
+      var tz = Session.getScriptTimeZone();
+      if (tz) return Utilities.formatDate(d, tz, "yyyy-MM-dd HH:mm:ss");
+    } catch (eTz) {}
+    try {
+      return Utilities.formatDate(d, "GMT+7", "yyyy-MM-dd HH:mm:ss");
+    } catch (eGmt) {}
+    return d.getFullYear() + "-" +
+      ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
+      ("0" + d.getDate()).slice(-2) + " " +
+      ("0" + d.getHours()).slice(-2) + ":" +
+      ("0" + d.getMinutes()).slice(-2) + ":" +
+      ("0" + d.getSeconds()).slice(-2);
   } catch (e) {
     return String(isoStr);
   }
 }
 
-function getSS() {
+function getSS(data) {
+  if (data && data.spreadsheetId) {
+    try {
+      var ssById = SpreadsheetApp.openById(data.spreadsheetId);
+      if (ssById) return ssById;
+    } catch (e0) {}
+  }
   try {
-    return SpreadsheetApp.openById("1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ");
+    var ssDefault = SpreadsheetApp.openById("1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ");
+    if (ssDefault) return ssDefault;
   } catch (e1) {}
   try {
     var active = SpreadsheetApp.getActiveSpreadsheet();
@@ -433,3 +481,4 @@ function getSS() {
   return null;
 }
 `;
+

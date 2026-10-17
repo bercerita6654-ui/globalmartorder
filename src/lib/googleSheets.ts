@@ -2,7 +2,7 @@ import { AppDatabase, Produk, MutasiStok, TransaksiKeuangan, Customer, Pengirima
 
 export const TARGET_SPREADSHEET_ID = '1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ';
 export const TARGET_SPREADSHEET_URL = `https://docs.google.com/spreadsheets/d/${TARGET_SPREADSHEET_ID}/edit?gid=0#gid=0`;
-export const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw_Gge0e-AGGh1WcKJqXvu6cIH72eynlhajLmhFFfZu8JWt1nQjGyXUp0KgrnT41MIG/exec';
+export const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzDxFFYfG1_IsjGPbizNZLZUbkAyLQnKeMy4kLnSzQOWzlkxwqrqoG9zAsZhUM2RZsy/exec';
 
 const parseNum = (val: any, fallback = 0): number => {
   if (val === undefined || val === null || val === '') return fallback;

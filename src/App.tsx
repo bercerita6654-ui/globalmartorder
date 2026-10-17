@@ -76,7 +76,7 @@ export default function App() {
       const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        const url = parsed.webAppUrl && typeof parsed.webAppUrl === 'string' && parsed.webAppUrl.trim().length > 0 && !parsed.webAppUrl.includes('AKfycbxblnwrH1kB2BjAVHcF4qKNpEh4oA9k7lLa_KsNQJQo3iElQLRJMDa6QAKgAraC2nbT')
+        const url = parsed.webAppUrl && !parsed.webAppUrl.includes('AKfycbxblnwrH1kB2BjAVHcF4qKNpEh4oA9k7lLa_KsNQJQo3iElQLRJMDa6QAKgAraC2nbT') && !parsed.webAppUrl.includes('AKfycbw_Gge0e-AGGh1WcKJqXvu6cIH72eynlhajLmhFFfZu8JWt1nQjGyXUp0KgrnT41MIG') && !parsed.webAppUrl.includes('AKfycbzebq4uQMhgLg2_eVFNSahHltweis_Ixh059SnpTHnpp1rifgO9lXqtFJpKi31KavXh')
           ? parsed.webAppUrl
           : DEFAULT_WEB_APP_URL;
         const sheetUrl = parsed.spreadsheetUrl && parsed.spreadsheetUrl.includes('1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ')

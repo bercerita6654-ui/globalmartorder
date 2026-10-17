@@ -16,7 +16,7 @@ interface SettingsModalProps {
 }
 
 const TARGET_SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1VjqsxWfMJDJwjmR_Z4QjhgEfhFJZIBQJLLr21wZL_rQ/edit?gid=0#gid=0';
-const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_Gge0e-AGGh1WcKJqXvu6cIH72eynlhajLmhFFfZu8JWt1nQjGyXUp0KgrnT41MIG/exec';
+const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDxFFYfG1_IsjGPbizNZLZUbkAyLQnKeMy4kLnSzQOWzlkxwqrqoG9zAsZhUM2RZsy/exec';
 
 const ALL_TABS = [
   { id: 'dashboard', label: 'Dashboard Analitik' },
