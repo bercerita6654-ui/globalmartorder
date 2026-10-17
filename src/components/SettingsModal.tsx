@@ -24,7 +24,7 @@ const ALL_TABS = [
   { id: 'stok', label: 'Mutasi Stok' },
   { id: 'keuangan', label: 'Kas & Keuangan' },
   { id: 'customer', label: 'Daftar Customer' },
-  { id: 'pengiriman', label: 'Nota & Pengiriman' },
+  { id: 'pengiriman', label: 'Nota & Pengiriman', hidden: true },
   { id: 'purchase_order', label: 'Penjualan' },
   { id: 'laporan', label: 'Laporan & Export' },
 ];

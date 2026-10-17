@@ -1777,48 +1777,14 @@ export const PurchaseOrderView: React.FC<PurchaseOrderViewProps> = ({
             {/* Printable Area Document */}
             <div className="p-4 sm:p-8 overflow-y-auto">
               <div id="printable-po-modal" className="bg-white text-slate-900 space-y-4 sm:space-y-6">
-                {/* Header Toko Vidica Dewata */}
-                <div className="border-b-2 border-slate-900 pb-3 sm:pb-4 flex flex-col sm:flex-row justify-between items-start gap-3">
-                  <div>
-                    <h1 className="text-lg sm:text-xl font-black uppercase tracking-wider text-slate-900 font-display">
-                      TOKO VIDICA DEWATA
-                    </h1>
-                    <p className="text-xs text-slate-600 mt-0.5">Jl. Gunung Seraya No. 28, Denpasar, Bali</p>
-                    <p className="text-xs text-slate-500">Telp: 08125921720 / 081283364685</p>
+                {/* Header Nota */}
+                <div className="border-b-2 border-slate-900 pb-3 sm:pb-4 flex justify-between items-center">
+                  <div className="inline-block bg-slate-900 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded">
+                    NOTA PENJUALAN
                   </div>
-                  <div className="sm:text-right">
-                    <div className="inline-block bg-slate-900 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded">
-                      NOTA PENJUALAN
-                    </div>
-                    <p className="text-xs font-mono font-bold text-slate-800 mt-1.5">
-                      No. Transaksi: <span className="text-indigo-900">{activePO.noPO || activePO.id}</span>
-                    </p>
-                    <p className="text-xs font-mono text-slate-600">Hari/Tgl: {activePO.tanggal}</p>
-                  </div>
-                </div>
-
-                {/* Detail Customer, Posisi, Admin */}
-                <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-200 text-xs grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <p className="font-bold uppercase tracking-wider text-slate-500 text-[10px] mb-1">
-                      CUSTOMER
-                    </p>
-                    <p className="font-bold text-sm text-slate-900">{activePO.customer || activePO.namaSupplier || '-'}</p>
-                  </div>
-
-                  <div>
-                    <p className="font-bold uppercase tracking-wider text-slate-500 text-[10px] mb-1">
-                      POSISI BARANG
-                    </p>
-                    <p className="font-semibold text-slate-800">{activePO.posisi || '-'}</p>
-                  </div>
-
-                  <div>
-                    <p className="font-bold uppercase tracking-wider text-slate-500 text-[10px] mb-1">
-                      ADMIN / KASIR
-                    </p>
-                    <p className="font-semibold text-slate-800">{activePO.admin || '-'}</p>
-                  </div>
+                  <p className="text-xs font-mono font-bold text-slate-800">
+                    No. Transaksi: <span className="text-indigo-900">{activePO.noPO || activePO.id}</span>
+                  </p>
                 </div>
 
                 {/* Tabel Items Penjualan */}

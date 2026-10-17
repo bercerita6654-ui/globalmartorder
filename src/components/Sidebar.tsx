@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'stok', label: 'Mutasi Stok', icon: <ArrowLeftRight className="w-5 h-5" /> },
     { id: 'keuangan', label: 'Kas & Keuangan', icon: <Wallet className="w-5 h-5" />, hidden: true },
     { id: 'customer', label: 'Daftar Customer', icon: <Users className="w-5 h-5" /> },
-    { id: 'pengiriman', label: 'Nota & Pengiriman', icon: <Truck className="w-5 h-5" /> },
+    { id: 'pengiriman', label: 'Nota & Pengiriman', icon: <Truck className="w-5 h-5" />, hidden: true },
     { id: 'purchase_order', label: 'Penjualan', icon: <ShoppingCart className="w-5 h-5" /> },
     { id: 'laporan', label: 'Laporan & Export', icon: <FileText className="w-5 h-5" />, hidden: true },
   ];
