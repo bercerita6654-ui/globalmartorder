@@ -178,11 +178,11 @@ export default function App() {
   // Google Sheets Synchronization
   const syncToSheets = async (targetDb = db) => {
     setIsSyncing(true);
-    const targetSpreadsheet = sheetsConfig.spreadsheetUrl || TARGET_SPREADSHEET_URL;
+    const targetWebAppUrl = sheetsConfig.webAppUrl || DEFAULT_WEB_APP_URL;
 
     try {
-      if (sheetsConfig.webAppUrl) {
-        const webRes = await syncToWebApp(targetDb, sheetsConfig.webAppUrl);
+      if (targetWebAppUrl) {
+        const webRes = await syncToWebApp(targetDb, targetWebAppUrl);
         if (webRes.success) {
           const nowStr = new Date().toISOString();
           setSheetsConfig((prev) => {
@@ -748,7 +748,7 @@ export default function App() {
           onToggleSidebar={() => setIsOpenMobileSidebar(!isOpenMobileSidebar)}
           sheetsConfig={sheetsConfig}
           user={{ displayName: adminName, email: 'admin@globalmart' } as any}
-          onSync={() => syncToSheets()}
+          onSync={handleRefreshData}
           isSyncing={isSyncing}
           onReset={handleResetData}
           onOpenSettings={() => setIsSettingsOpen(true)}

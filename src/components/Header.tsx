@@ -64,21 +64,16 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Direct Google Sheets Sync Button */}
+        {/* Refresh Data from Spreadsheet Button */}
         <button
           onClick={onSync}
           disabled={isSyncing}
-          className={`flex items-center gap-2 text-xs px-3.5 py-1.5 rounded-xl border transition-all ${
-            user
-              ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/80 font-semibold shadow-xs'
-              : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100/80 font-medium'
-          }`}
-          title={user ? 'Rekap langsung ke Google Spreadsheet' : 'Login Google & Rekap ke Sheet'}
+          className="flex items-center gap-2 text-xs px-3.5 py-1.5 rounded-xl border transition-all bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/80 font-semibold shadow-xs"
+          title="Refresh & Tarik Data Terbaru dari Google Spreadsheet"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-emerald-600' : ''}`} />
           <span className="hidden sm:inline flex items-center gap-1">
-            {isSyncing ? 'Rekap Data...' : 'Rekap Ke Sheet'}
-            {user && <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 inline" />}
+            {isSyncing ? 'Memuat Data...' : 'Refresh Data'}
           </span>
         </button>
 
