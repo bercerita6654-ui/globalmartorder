@@ -1846,9 +1846,6 @@ export const PurchaseOrderView: React.FC<PurchaseOrderViewProps> = ({
                 <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 items-end">
                   <div>
                     <p className="text-[10px] font-bold uppercase text-slate-500 mb-1">CATATAN TRANSAKSI:</p>
-                    <p className="text-xs bg-slate-50 p-2.5 rounded border border-slate-200 text-slate-700 italic min-h-[40px]">
-                      {activePO.catatan || 'Terima kasih atas transaksi Anda di Toko Vidica Dewata.'}
-                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 text-center text-xs pt-2 sm:pt-0">
